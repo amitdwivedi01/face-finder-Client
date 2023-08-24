@@ -5,6 +5,14 @@ const multer = require("multer");
 const cors = require("cors");
 require("dotenv").config();
 
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: "dl65maoxr",
+  api_key: "568554877484896",
+  api_secret: "QC6zcbbnJHTVQxwjgdS-0b46vfQ",
+});
+
 const dbHost = process.env.DB_Host;
 
 const app = express();
