@@ -152,9 +152,9 @@ app.get("/get-updated-image", async (req, res) => {
   }
 });
 
-// setInterval(async () => {
-//   await edittheimg();
-// }, 10000);
+setInterval(async () => {
+  await edittheimg();
+}, 10000);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
