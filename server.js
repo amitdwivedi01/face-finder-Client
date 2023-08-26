@@ -18,7 +18,7 @@ const dbHost = process.env.DB_Host;
 
 const app = express();
 app.use(cors());
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // Connect to MongoDB
 mongoose.connect(`${dbHost}`, {
