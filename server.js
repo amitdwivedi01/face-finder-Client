@@ -452,17 +452,17 @@ app.get("/get-updated-image3", async (req, res) => {
 
 app.get("/get-updated-image4", async (req, res) => {
   try {
-    if (updatedImageArray3.length > 0) {
+    if (updatedImageArray4.length > 0) {
       // If there are updated images in the array, use the first one
-      const firstUpdatedImage = updatedImageArray3[0];
-      updatedImageArray3.shift(); // Remove the first element from the array
+      const firstUpdatedImage = updatedImageArray4[0];
+      updatedImageArray4.shift(); // Remove the first element from the array
       res.json({
         name: firstUpdatedImage.name,
         updatedImage: firstUpdatedImage.image,
       });
     } else {
       // If no updated images, provide default values
-      const randomImageDoc = await EditedImage3.aggregate([{ $sample: { size: 1 } }]);
+      const randomImageDoc = await EditedImage4.aggregate([{ $sample: { size: 1 } }]);
       if (randomImageDoc.length > 0) {
         res.json({
           name: randomImageDoc[0].name,
@@ -489,7 +489,7 @@ setInterval(async () => {
   await edittheimg3();
   await edittheimg4();
 
-}, 12000);
+}, 13000);
 
 
 
