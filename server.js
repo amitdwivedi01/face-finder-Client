@@ -379,21 +379,6 @@ app.get("/get-updated-image", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Error retrieving updated image" });
   }
-  try {
-    const randomImageDoc = await EditedImage.aggregate([
-      { $sample: { size: 1 } },
-    ]);
-    if (randomImageDoc.length > 0) {
-      // const result = await cloudinary.uploader.upload(randomImageDoc[0].image);
-      // console.log(result, "result from cloudinary");
-      res.json({
-        name: randomImageDoc[0].name,
-        updatedImage: randomImageDoc[0].image,
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
 });
 
 
@@ -428,21 +413,6 @@ app.get("/get-updated-image2", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Error retrieving updated image" });
   }
-  try {
-    const randomImageDoc = await EditedImage2.aggregate([
-      { $sample: { size: 1 } },
-    ]);
-    if (randomImageDoc.length > 0) {
-      // const result = await cloudinary.uploader.upload(randomImageDoc[0].image);
-      // console.log(result, "result from cloudinary");
-      res.json({
-        name: randomImageDoc[0].name,
-        updatedImage: randomImageDoc[0].image,
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
 });
 
 app.get("/get-updated-image3", async (req, res) => {
@@ -476,21 +446,7 @@ app.get("/get-updated-image3", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Error retrieving updated image" });
   }
-  try {
-    const randomImageDoc = await EditedImage3.aggregate([
-      { $sample: { size: 1 } },
-    ]);
-    if (randomImageDoc.length > 0) {
-      // const result = await cloudinary.uploader.upload(randomImageDoc[0].image);
-      // console.log(result, "result from cloudinary");
-      res.json({
-        name: randomImageDoc[0].name,
-        updatedImage: randomImageDoc[0].image,
-      });
-    }
-  } catch (error) {
-    console.log(error);
-  }
+  
 });
 
 
@@ -524,21 +480,6 @@ app.get("/get-updated-image4", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error retrieving updated image" });
-  }
-  try {
-    const randomImageDoc = await EditedImage4.aggregate([
-      { $sample: { size: 1 } },
-    ]);
-    if (randomImageDoc.length > 0) {
-      // const result = await cloudinary.uploader.upload(randomImageDoc[0].image);
-      // console.log(result, "result from cloudinary");
-      res.json({
-        name: randomImageDoc[0].name,
-        updatedImage: randomImageDoc[0].image,
-      });
-    }
-  } catch (error) {
-    console.log(error);
   }
 });
 
