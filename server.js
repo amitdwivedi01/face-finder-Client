@@ -21,6 +21,9 @@ cloudinary.config({
 const dbHost = process.env.DB_Host;
 
 const app = express();
+// Increase payload limit to 1GB
+app.use(express.json({ limit: '1gb' }));
+app.use(express.urlencoded({ extended: true, limit: '1gb' }));
 app.use(cors());
 const PORT = process.env.PORT || 8080;
 
@@ -45,15 +48,10 @@ const imageSchema = new mongoose.Schema({
   email: String,
   number: String,
   image: String,
-  uniqueId: { type: String, default: uuidv4 }
+  
 });
 const Image = mongoose.model("Image", imageSchema);
 
-const editedimageSchema = new mongoose.Schema({
-  uniqueId: String,
-  image: String,
-});
-const EditedImage = mongoose.model("EditedImage", editedimageSchema);
 // Set up Multer for image upload
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -63,29 +61,60 @@ app.use(express.json());
 // Handle image upload
 app.post("/upload", upload.single("image"), async (req, res) => {
   try {
-    const { name, image, number, email } = req.body; // Destructure name and image from the request body
-    const uniqueId = uuidv4(); // Generate a unique ID
-    const newImage = new Image({ name, email, number, image, uniqueId}); // Create a new Image instance
+    const { name, image, number, email } = req.body; // Destructure name and image from the request body   
+    const newImage = new Image({ name, email, number, image}); // Create a new Image instance
     await newImage.save(); // Save the new image to the collection
-    const onlyImage = new EditedImage({image, uniqueId});
-    await onlyImage.save();
-    const response = await axios.post('localhost/findImage',image);
-    if(response.status === 201){
-       // The response.data should contain an array of uniqueIds
-       const uniqueIds = response.data;
-
-       // Retrieve images from the Image collection based on uniqueIds
-       const images = await Image.find({ uniqueId: { $in: uniqueIds } });
- 
-       // Do something with the retrieved images
-       console.log("Retrieved images:", images);
-       res.json({ message: "Image uploaded successfully" });
-    }
+    // const response = await axios.post('localhost/findImage',image);
+    // if(response.status === 201){     
+    //    const uniqueIds = response.data;     
+    //    const images = await Image.find({ uniqueId: { $in: uniqueIds } });     
+    //    console.log("Retrieved images:", images);
+    //    res.json({ message: "Image uploaded successfully" });
+    // }
+    res.json({message: "hello"});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error uploading image" });
   }
 });
+
+// app.post("/upload", upload.single("image"), async (req, res) => {
+//   try {
+//     const { name, number, email,image } = req.body;
+
+//     const newImage = new Image({
+//       name,
+//       email,
+//       number,
+//       image ,
+//     });
+
+//     await newImage.save();
+
+//     const response = await axios.post('localhost/findImage', {
+//       imagePath: req.file.path,
+//     });
+//     const response = ['./uploads\extracted\Screenshot (12).png', './uploads/extracted/Screenshot (13).png'] nhi chaiye
+
+//     if (response.status === 201) {
+//       const localFilePaths = response.data; correctone 
+//       const localFilePaths = response;
+//       const cloudinaryUrls = [];
+
+//       for (const localFilePath of localFilePaths) {
+//         const cloudinaryResponse = await cloudinary.uploader.upload(localFilePath);
+//         cloudinaryUrls.push(cloudinaryResponse.secure_url);
+//       }
+
+//       res.json({ message: "Images uploaded to Cloudinary successfully", cloudinaryUrls });
+//     } else {
+//       res.json({ message: "hello" });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Error uploading image" });
+//   }
+// });
 
 app.post("/upload-zip", upload.single("zipFile"), async (req, res) => {
   try {
