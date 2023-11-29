@@ -59,62 +59,70 @@ const upload = multer({ storage: storage });
 app.use(express.json());
 
 // Handle image upload
-app.post("/upload", upload.single("image"), async (req, res) => {
-  try {
-    const { name, image, number, email } = req.body; // Destructure name and image from the request body   
-    const newImage = new Image({ name, email, number, image}); // Create a new Image instance
-    await newImage.save(); // Save the new image to the collection
-    // const response = await axios.post('localhost/findImage',image);
-    // if(response.status === 201){     
-    //    const uniqueIds = response.data;     
-    //    const images = await Image.find({ uniqueId: { $in: uniqueIds } });     
-    //    console.log("Retrieved images:", images);
-    //    res.json({ message: "Image uploaded successfully" });
-    // }
-    res.json({message: "hello"});
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error uploading image" });
-  }
-});
-
 // app.post("/upload", upload.single("image"), async (req, res) => {
 //   try {
-//     const { name, number, email,image } = req.body;
-
-//     const newImage = new Image({
-//       name,
-//       email,
-//       number,
-//       image ,
-//     });
-
-//     await newImage.save();
-
-//     const response = await axios.post('localhost/findImage', {
-//       imagePath: req.file.path,
-//     });
-//     const response = ['./uploads\extracted\Screenshot (12).png', './uploads/extracted/Screenshot (13).png'] nhi chaiye
-
-//     if (response.status === 201) {
-//       const localFilePaths = response.data; correctone 
-//       const localFilePaths = response;
-//       const cloudinaryUrls = [];
-
-//       for (const localFilePath of localFilePaths) {
-//         const cloudinaryResponse = await cloudinary.uploader.upload(localFilePath);
-//         cloudinaryUrls.push(cloudinaryResponse.secure_url);
-//       }
-
-//       res.json({ message: "Images uploaded to Cloudinary successfully", cloudinaryUrls });
-//     } else {
-//       res.json({ message: "hello" });
+//     const { name, image, number, email } = req.body; // Destructure name and image from the request body   
+//     const newImage = new Image({ name, email, number, image}); // Create a new Image instance
+//     await newImage.save(); // Save the new image to the collection
+//     const response = await axios.post('localhost/findImage',image);
+//     if(response.status === 201){     
+//        const uniqueIds = response.data;     
+//        const images = await Image.find({ uniqueId: { $in: uniqueIds } });     
+//        console.log("Retrieved images:", images);
+//        res.json({ message: "Image uploaded successfully" });
 //     }
+//     res.json({message: "hello"});
 //   } catch (error) {
 //     console.error(error);
 //     res.status(500).json({ message: "Error uploading image" });
 //   }
 // });
+
+app.post("/upload", upload.single("image"), async (req, res) => {
+  try {
+    const { name, number, email,image } = req.body;
+    const uniqueId = uuidv4();
+    const newImage = new Image({
+      name,
+      email,
+      number,
+      image,     
+    });
+
+    await newImage.save();
+    const username = 'callback';
+    const imageDataParts = image.split(",");
+    const base64Image = imageDataParts[1];
+    const headers = {
+      userid: "Event@kochi",
+      clientsecretkey: "RandomGeneratedPassword@kochi",
+    };
+    const response = await axios.post('http://localhost:8000/face_verify', 
+      {
+        Image_Name: username,
+        Image_Base64: base64Image,
+      },
+      { headers }
+    );
+    console.log(response.data, "response from sachin");
+    if (response.status === 200) {
+      const localFilePaths = response.data;
+      const cloudinaryUrls = []; 
+
+      for (const localFilePath of localFilePaths) {
+        const cloudinaryResponse = await cloudinary.uploader.upload(localFilePath);
+        cloudinaryUrls.push(cloudinaryResponse.secure_url);
+      }
+
+      res.json({ message: "Images uploaded to Cloudinary successfully", ok:true, cloudinaryUrls });
+    } else {
+      res.json({ message: "hello" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error uploading image" });
+  }
+});
 
 app.post("/upload-zip", upload.single("zipFile"), async (req, res) => {
   try {
