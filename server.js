@@ -22,8 +22,8 @@ const dbHost = process.env.DB_Host;
 
 const app = express();
 // Increase payload limit to 1GB
-app.use(express.json({ limit: '1gb' }));
-app.use(express.urlencoded({ extended: true, limit: '1gb' }));
+app.use(express.json({ limit: '35gb' }));
+app.use(express.urlencoded({ extended: true, limit: '35gb' }));
 app.use(cors());
 const PORT = process.env.PORT || 8080;
 
